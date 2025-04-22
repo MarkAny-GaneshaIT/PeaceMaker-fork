@@ -88,8 +88,8 @@ DisplayAlert (
 	case FilterViolation:
 		filterViolationAlert = RCAST<PFILTER_VIOLATION_ALERT>(Alert);
 		printf("DisplayAlert: \tAlert Type: Filter violation\n");
-		printf("DisplayAlert: \tFilter content: %ws\n", filterViolationAlert->ViolatedFilter.MatchString);
-		printf("DisplayAlert: \tFilter flags: 0x%X\n", filterViolationAlert->ViolatedFilter.Flags);
+		//printf("DisplayAlert: \tFilter content: %ws\n", filterViolationAlert->ViolatedFilter.MatchString);
+		//printf("DisplayAlert: \tFilter flags: 0x%X\n", filterViolationAlert->ViolatedFilter.Flags);
 		DisplayStackHistory(filterViolationAlert->StackHistory, filterViolationAlert->StackHistorySize);
 		break;
 	}

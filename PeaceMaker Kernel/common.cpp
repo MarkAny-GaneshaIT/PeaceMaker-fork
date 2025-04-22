@@ -8,7 +8,46 @@
 #include "shared.h"
 
 void* __cdecl operator new(size_t size, POOL_TYPE pool, ULONG tag) {
-	PVOID newAddress = ExAllocatePoolWithTag(pool, size, tag);
+	POOL_FLAGS poolflags = 0; // create from pool
+	switch (pool) {
+	case NonPagedPool:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE;
+	case PagedPool:
+		poolflags = POOL_FLAG_PAGED;
+	case NonPagedPoolMustSucceed:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_RAISE_ON_FAILURE;
+	case DontUseThisType:
+		poolflags = 0;
+	case NonPagedPoolCacheAligned:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_CACHE_ALIGNED;
+	case PagedPoolCacheAligned:
+		poolflags = POOL_FLAG_PAGED | POOL_FLAG_CACHE_ALIGNED;
+	case NonPagedPoolCacheAlignedMustS:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_CACHE_ALIGNED | POOL_FLAG_RAISE_ON_FAILURE;
+	case MaxPoolType:
+		poolflags = 0;
+	case NonPagedPoolSession:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_SESSION;
+	case PagedPoolSession:
+		poolflags = POOL_FLAG_PAGED | POOL_FLAG_SESSION;
+	case NonPagedPoolMustSucceedSession:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_RAISE_ON_FAILURE | POOL_FLAG_SESSION;
+	case DontUseThisTypeSession:
+		poolflags = 0 | POOL_FLAG_SESSION;
+	case NonPagedPoolCacheAlignedSession:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_CACHE_ALIGNED | POOL_FLAG_SESSION;
+	case PagedPoolCacheAlignedSession:
+		poolflags = POOL_FLAG_PAGED | POOL_FLAG_CACHE_ALIGNED | POOL_FLAG_SESSION;
+	case NonPagedPoolCacheAlignedMustSSession:
+		poolflags = POOL_FLAG_NON_PAGED_EXECUTE | POOL_FLAG_CACHE_ALIGNED | POOL_FLAG_RAISE_ON_FAILURE | POOL_FLAG_SESSION;
+	case NonPagedPoolNx:
+		poolflags = POOL_FLAG_NON_PAGED;
+	case NonPagedPoolNxCacheAligned:
+		poolflags = POOL_FLAG_NON_PAGED | POOL_FLAG_CACHE_ALIGNED;
+	case NonPagedPoolSessionNx:
+		poolflags = POOL_FLAG_NON_PAGED | POOL_FLAG_SESSION;
+	}
+	PVOID newAddress = ExAllocatePool2(poolflags, size, tag);
 	//
 	// Remove remenants from previous use.
 	//

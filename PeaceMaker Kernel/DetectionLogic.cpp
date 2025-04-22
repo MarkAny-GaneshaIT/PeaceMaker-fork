@@ -121,7 +121,7 @@ DetectionLogic::PushStackViolationAlert(
 	//
 	// Allocate space for the alert depending on the size of StackHistory.
 	//
-	stackViolationAlert = RCAST<PSTACK_VIOLATION_ALERT>(ExAllocatePoolWithTag(PagedPool, sizeof(STACK_VIOLATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
+	stackViolationAlert = RCAST<PSTACK_VIOLATION_ALERT>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(STACK_VIOLATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
 	if (stackViolationAlert == NULL)
 	{
 		DBGPRINT("DetectionLogic!PushStackViolationAlert: Failed to allocate space for the alert.");
@@ -243,7 +243,7 @@ DetectionLogic::AuditCallerProcessId(
 	//
 	// Allocate space for the alert depending on the size of StackHistory.
 	//
-	remoteOperationAlert = RCAST<PREMOTE_OPERATION_ALERT>(ExAllocatePoolWithTag(PagedPool, sizeof(REMOTE_OPERATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
+	remoteOperationAlert = RCAST<PREMOTE_OPERATION_ALERT>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(REMOTE_OPERATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
 	if (remoteOperationAlert == NULL)
 	{
 		DBGPRINT("DetectionLogic!PushStackViolationAlert: Failed to allocate space for the alert.");
@@ -329,7 +329,7 @@ DetectionLogic::ReportFilterViolation (
 	//
 	// Allocate space for the alert depending on the size of StackHistory.
 	//
-	filterViolationAlert = RCAST<PFILTER_VIOLATION_ALERT>(ExAllocatePoolWithTag(PagedPool, sizeof(FILTER_VIOLATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
+	filterViolationAlert = RCAST<PFILTER_VIOLATION_ALERT>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(FILTER_VIOLATION_ALERT) + stackHistoryBytes, STACK_VIOLATION_TAG));
 	if (filterViolationAlert == NULL)
 	{
 		DBGPRINT("DetectionLogic!ReportFilterViolation: Failed to allocate space for the alert.");

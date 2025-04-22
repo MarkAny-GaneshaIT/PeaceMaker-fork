@@ -12,6 +12,7 @@ ClassGuid = {b86dff51-a31e-4bac-b3cf-e8cfe75c9fc2}
 Provider    = %ManufacturerName%
 DriverVer   = 12/17/2019,1.0.0.0
 CatalogFile = PeaceMakerKernel.cat
+PnpLockdown = 1
 
 [DestinationDirs]
 DefaultDestDir          = 12
@@ -21,21 +22,22 @@ MiniFilter.DriverFiles  = 12            ;%windir%\system32\drivers
 ;; Default install sections
 ;;
 
-[DefaultInstall]
+[DefaultInstall.NT$ARCH$]
 OptionDesc          = %ServiceDescription%
-CopyFiles           = MiniFilter.DriverFiles
+CopyFiles           = MiniFilter.DriverFiles.Copy
 
-[DefaultInstall.Services]
+[DefaultInstall.NT$ARCH$.Services]
 AddService          = %ServiceName%,,MiniFilter.Service
 
 ;;
 ;; Default uninstall sections
 ;;
 
-[DefaultUninstall]
-DelFiles   = MiniFilter.DriverFiles
+[DefaultUninstall.NT$ARCH$]
+LegacyUninstall = 1
+DelFiles   = MiniFilter.DriverFiles.Del
 
-[DefaultUninstall.Services]
+[DefaultUninstall.NT$ARCH$.Services]
 DelService = %ServiceName%,0x200      ;Ensure service is stopped before deleting
 
 ;
@@ -70,7 +72,10 @@ HKR,"Instances\"%Instance1.Name%,"Flags",0x00010001,%Instance1.Flags%
 ; Copy Files
 ;
 
-[MiniFilter.DriverFiles]
+[MiniFilter.DriverFiles.Copy]
+%DriverName%.sys
+
+[MiniFilter.DriverFiles.Del]
 %DriverName%.sys
 
 [SourceDisksFiles]
@@ -96,4 +101,4 @@ DefaultInstance         = "FilterTesting Instance"
 Instance1.Name          = "FilterTesting Instance"
 ; TODO - Change the altitude value, see https://msdn.microsoft.com/en-us/windows/hardware/drivers/ifs/load-order-groups-and-altitudes-for-minifilter-drivers
 Instance1.Altitude       = "321410"
-Instance1.Flags         = 0x0              ; Allow all attachments
+Instance1.Flags         = 0x0              ; Allow all attachments

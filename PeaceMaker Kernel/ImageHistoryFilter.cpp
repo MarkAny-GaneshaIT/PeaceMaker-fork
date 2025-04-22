@@ -45,7 +45,7 @@ ImageHistoryFilter::ImageHistoryFilter (
 
 	FltInitializePushLock(&ImageHistoryFilter::ProcessHistoryLock);
 
-	ImageHistoryFilter::ProcessHistoryHead = RCAST<PPROCESS_HISTORY_ENTRY>(ExAllocatePoolWithTag(PagedPool, sizeof(PROCESS_HISTORY_ENTRY), PROCESS_HISTORY_TAG));
+	ImageHistoryFilter::ProcessHistoryHead = RCAST<PPROCESS_HISTORY_ENTRY>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(PROCESS_HISTORY_ENTRY), PROCESS_HISTORY_TAG));
 	if (ImageHistoryFilter::ProcessHistoryHead == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!ImageHistoryFilter: Failed to allocate the process history head.");
@@ -206,7 +206,7 @@ ImageHistoryFilter::AddProcessToHistory (
 		return;
 	}
 
-	newProcessHistory = RCAST<PPROCESS_HISTORY_ENTRY>(ExAllocatePoolWithTag(PagedPool, sizeof(PROCESS_HISTORY_ENTRY), PROCESS_HISTORY_TAG));
+	newProcessHistory = RCAST<PPROCESS_HISTORY_ENTRY>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(PROCESS_HISTORY_ENTRY), PROCESS_HISTORY_TAG));
 	if (newProcessHistory == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!AddProcessToHistory: Failed to allocate space for the process history.");
@@ -235,7 +235,7 @@ ImageHistoryFilter::AddProcessToHistory (
 	//
 	// Allocate the necessary space.
 	//
-	newProcessHistory->ProcessImageFileName = RCAST<PUNICODE_STRING>(ExAllocatePoolWithTag(PagedPool, sizeof(UNICODE_STRING) + CreateInfo->ImageFileName->Length, IMAGE_NAME_TAG));
+	newProcessHistory->ProcessImageFileName = RCAST<PUNICODE_STRING>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(UNICODE_STRING) + CreateInfo->ImageFileName->Length, IMAGE_NAME_TAG));
 	if (newProcessHistory->ProcessImageFileName == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!AddProcessToHistory: Failed to allocate space for process ImageFileName.");
@@ -256,7 +256,7 @@ ImageHistoryFilter::AddProcessToHistory (
 	//
 	if (CreateInfo->CommandLine)
 	{
-		newProcessHistory->ProcessCommandLine = RCAST<PUNICODE_STRING>(ExAllocatePoolWithTag(PagedPool, sizeof(UNICODE_STRING) + CreateInfo->CommandLine->Length, IMAGE_COMMMAND_TAG));
+		newProcessHistory->ProcessCommandLine = RCAST<PUNICODE_STRING>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(UNICODE_STRING) + CreateInfo->CommandLine->Length, IMAGE_COMMMAND_TAG));
 		if (newProcessHistory->ProcessCommandLine == NULL)
 		{
 			DBGPRINT("ImageHistoryFilter!AddProcessToHistory: Failed to allocate space for process command line.");
@@ -294,7 +294,7 @@ ImageHistoryFilter::AddProcessToHistory (
 		goto Exit;
 	}
 
-	newProcessHistory->ImageLoadHistory = RCAST<PIMAGE_LOAD_HISTORY_ENTRY>(ExAllocatePoolWithTag(PagedPool, sizeof(IMAGE_LOAD_HISTORY_ENTRY), IMAGE_HISTORY_TAG));
+	newProcessHistory->ImageLoadHistory = RCAST<PIMAGE_LOAD_HISTORY_ENTRY>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(IMAGE_LOAD_HISTORY_ENTRY), IMAGE_HISTORY_TAG));
 	if (newProcessHistory->ImageLoadHistory == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!AddProcessToHistory: Failed to allocate space for the image load history.");
@@ -479,7 +479,7 @@ ImageHistoryFilter::GetProcessImageFileName (
 	//
 	// Allocate the necessary space.
 	//
-	*ImageFileName = RCAST<PUNICODE_STRING>(ExAllocatePoolWithTag(PagedPool, returnLength, IMAGE_NAME_TAG));
+	*ImageFileName = RCAST<PUNICODE_STRING>(ExAllocatePool2(POOL_FLAG_PAGED, returnLength, IMAGE_NAME_TAG));
 	if (*ImageFileName == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!GetProcessImageFileName: Failed to allocate space for process ImageFileName.");
@@ -570,7 +570,7 @@ ImageHistoryFilter::LoadImageNotifyRoutine(
 	//
 	// Allocate space for the new image history entry.
 	//
-	newImageLoadHistory = RCAST<PIMAGE_LOAD_HISTORY_ENTRY>(ExAllocatePoolWithTag(PagedPool, sizeof(IMAGE_LOAD_HISTORY_ENTRY), IMAGE_HISTORY_TAG));
+	newImageLoadHistory = RCAST<PIMAGE_LOAD_HISTORY_ENTRY>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(IMAGE_LOAD_HISTORY_ENTRY), IMAGE_HISTORY_TAG));
 	if (newImageLoadHistory == NULL)
 	{
 		DBGPRINT("ImageHistoryFilter!LoadImageNotifyRoutine: Failed to allocate space for the image history entry.");
@@ -594,7 +594,7 @@ ImageHistoryFilter::LoadImageNotifyRoutine(
 		//
 		// Allocate the copy buffer. FullImageName will not be valid forever.
 		//
-		newImageLoadHistory->ImageFileName.Buffer = RCAST<PWCH>(ExAllocatePoolWithTag(PagedPool, SCAST<SIZE_T>(FullImageName->Length) + 2, IMAGE_NAME_TAG));
+		newImageLoadHistory->ImageFileName.Buffer = RCAST<PWCH>(ExAllocatePool2(POOL_FLAG_PAGED, SCAST<SIZE_T>(FullImageName->Length) + 2, IMAGE_NAME_TAG));
 		if (newImageLoadHistory->ImageFileName.Buffer == NULL)
 		{
 			DBGPRINT("ImageHistoryFilter!LoadImageNotifyRoutine: Failed to allocate space for the image file name.");

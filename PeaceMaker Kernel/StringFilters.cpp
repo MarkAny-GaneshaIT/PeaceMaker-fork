@@ -23,7 +23,7 @@ StringFilters::StringFilters (
 	//
 	FltInitializePushLock(&this->filtersLock);
 
-	this->filtersHead = RCAST<PFILTER_INFO_LINKED>(ExAllocatePoolWithTag(NonPagedPool, sizeof(FILTER_INFO_LINKED), FILTER_INFO_TAG));
+	this->filtersHead = RCAST<PFILTER_INFO_LINKED>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, sizeof(FILTER_INFO_LINKED), FILTER_INFO_TAG));
 	InitializeListHead(RCAST<PLIST_ENTRY>(this->filtersHead));
 	this->destroying = FALSE;
 
@@ -33,7 +33,7 @@ StringFilters::StringFilters (
 	//
 	// Initialize space for the driver registry key.
 	//
-	this->driverRegistryPath.Buffer = RCAST<PWCH>(ExAllocatePoolWithTag(NonPagedPool, RegistryPath->MaximumLength, FILTER_INFO_TAG));
+	this->driverRegistryPath.Buffer = RCAST<PWCH>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, RegistryPath->MaximumLength, FILTER_INFO_TAG));
 	this->driverRegistryPath.MaximumLength = RegistryPath->MaximumLength;
 	RtlCopyUnicodeString(&this->driverRegistryPath, RegistryPath);
 
@@ -124,7 +124,7 @@ StringFilters::AddFilter (
 	//
 	// Allocate space for the new filter.
 	//
-	newFilter = RCAST<PFILTER_INFO_LINKED>(ExAllocatePoolWithTag(NonPagedPool, sizeof(FILTER_INFO_LINKED), FILTER_INFO_TAG));
+	newFilter = RCAST<PFILTER_INFO_LINKED>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, sizeof(FILTER_INFO_LINKED), FILTER_INFO_TAG));
 	if (newFilter == NULL)
 	{
 		DBGPRINT("Failed to allocate space for filter info.");
@@ -388,7 +388,7 @@ StringFilters::SaveFilters (
 	//
 	// Allocate space for the filter store.
 	//
-	filterStore = RCAST<PFILTER_STORE>(ExAllocatePoolWithTag(NonPagedPool, FILTER_STORE_SIZE(this->filtersCount), FILTER_INFO_TAG));
+	filterStore = RCAST<PFILTER_STORE>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, FILTER_STORE_SIZE(this->filtersCount), FILTER_INFO_TAG));
 	if (filterStore == NULL)
 	{
 		DBGPRINT("StringFilters!SaveFilters: Failed to allocate space for the filter store with size %i.", this->filtersCount);
@@ -502,7 +502,7 @@ StringFilters::RestoreFilters (
 	//
 	// Allocate space for the FilterStore partial struct and query the actual value.
 	//
-	filterStorePartial = RCAST<PKEY_VALUE_PARTIAL_INFORMATION>(ExAllocatePoolWithTag(NonPagedPool, filterStorePartialSize, FILTER_INFO_TAG));
+	filterStorePartial = RCAST<PKEY_VALUE_PARTIAL_INFORMATION>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, filterStorePartialSize, FILTER_INFO_TAG));
 	status = ZwQueryValueKey(driverRegistryKey, &this->filterStoreValueName, KeyValuePartialInformation, filterStorePartial, filterStorePartialSize, &filterStorePartialSize);
 	if (NT_SUCCESS(status) == FALSE)
 	{

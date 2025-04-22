@@ -11,7 +11,7 @@
 */
 AlertQueue::AlertQueue()
 {
-	this->alertsLock = RCAST<PKSPIN_LOCK>(ExAllocatePoolWithTag(NonPagedPool, sizeof(KSPIN_LOCK), ALERT_LOCK_TAG));
+	this->alertsLock = RCAST<PKSPIN_LOCK>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, sizeof(KSPIN_LOCK), ALERT_LOCK_TAG));
 	NT_ASSERT(this->alertsLock);
 	this->destroying = FALSE;
 	KeInitializeSpinLock(this->alertsLock);
@@ -67,7 +67,7 @@ AlertQueue::PushAlert (
 	//
 	// Allocate space for the new alert and copy the details.
 	//
-	newAlert = RCAST<PBASE_ALERT_INFO>(ExAllocatePoolWithTag(NonPagedPool, AlertSize, ALERT_QUEUE_ENTRY_TAG));
+	newAlert = RCAST<PBASE_ALERT_INFO>(ExAllocatePool2(POOL_FLAG_NON_PAGED_EXECUTE, AlertSize, ALERT_QUEUE_ENTRY_TAG));
 	if (newAlert == NULL)
 	{
 		DBGPRINT("AlertQueue!PushAlert: Failed to allocate space for new alert.");

@@ -37,7 +37,7 @@ StackWalker::ResolveAddressModule (
 		//
 		// Allocate the filename.
 		//
-		mappedFilename = RCAST<PUNICODE_STRING>(ExAllocatePoolWithTag(PagedPool, mappedFilenameLength, STACK_WALK_MAPPED_NAME));
+		mappedFilename = RCAST<PUNICODE_STRING>(ExAllocatePool2(POOL_FLAG_PAGED, mappedFilenameLength, STACK_WALK_MAPPED_NAME));
 		if (mappedFilename == NULL)
 		{
 			DBGPRINT("StackWalker!ResolveAddressModule: Failed to allocate module name.");
@@ -54,7 +54,7 @@ StackWalker::ResolveAddressModule (
 			// If we don't have a large enough buffer, allocate one!
 			//
 			ExFreePoolWithTag(mappedFilename, STACK_WALK_MAPPED_NAME);
-			mappedFilename = RCAST<PUNICODE_STRING>(ExAllocatePoolWithTag(PagedPool, mappedFilenameLength, STACK_WALK_MAPPED_NAME));
+			mappedFilename = RCAST<PUNICODE_STRING>(ExAllocatePool2(POOL_FLAG_PAGED, mappedFilenameLength, STACK_WALK_MAPPED_NAME));
 			if (mappedFilename == NULL)
 			{
 				DBGPRINT("StackWalker!ResolveAddressModule: Failed to allocate module name.");
@@ -139,7 +139,7 @@ StackWalker::WalkAndResolveStack (
 	//
 	// Allocate space for the return addresses.
 	//
-	stackReturnPtrs = RCAST<PVOID*>(ExAllocatePoolWithTag(PagedPool, sizeof(PVOID) * *ResolvedStackSize, STACK_WALK_ARRAY_TAG));
+	stackReturnPtrs = RCAST<PVOID*>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(PVOID) * *ResolvedStackSize, STACK_WALK_ARRAY_TAG));
 	if (stackReturnPtrs == NULL)
 	{
 		DBGPRINT("StackWalker!WalkAndResolveStack: Failed to allocate space for temporary stack array.");
@@ -165,7 +165,7 @@ StackWalker::WalkAndResolveStack (
 	//
 	// Allocate space for the stack return info array.
 	//
-	*ResolvedStack = RCAST<PSTACK_RETURN_INFO>(ExAllocatePoolWithTag(PagedPool, sizeof(STACK_RETURN_INFO) * *ResolvedStackSize, ResolvedStackTag));
+	*ResolvedStack = RCAST<PSTACK_RETURN_INFO>(ExAllocatePool2(POOL_FLAG_PAGED, sizeof(STACK_RETURN_INFO) * *ResolvedStackSize, ResolvedStackTag));
 	if (*ResolvedStack == NULL)
 	{
 		DBGPRINT("StackWalker!WalkAndResolveStack: Failed to allocate space for stack info array.");

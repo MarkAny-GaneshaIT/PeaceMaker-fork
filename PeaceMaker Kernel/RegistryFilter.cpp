@@ -123,7 +123,7 @@ RegistryBlockingFilter::BlockRegistryOperation (
 		goto Exit;
 	}
 
-	tempValueName = RCAST<PWCHAR>(ExAllocatePoolWithTag(NonPagedPoolNx, ValueName->Length, REGISTRY_KEY_NAME_TAG));
+	tempValueName = RCAST<PWCHAR>(ExAllocatePool2(POOL_FLAG_NON_PAGED, ValueName->Length, REGISTRY_KEY_NAME_TAG));
 	if (tempValueName == NULL)
 	{
 		DBGPRINT("RegistryBlockingFilter!BlockRegistryOperation: Failed to allocate memory for value name with size 0x%X.", ValueName->Length);
@@ -154,7 +154,7 @@ RegistryBlockingFilter::BlockRegistryOperation (
 		}
 
 		returnLength += 1; // For null terminator.
-		pKeyNameInformation = RCAST<PKEY_NAME_INFORMATION>(ExAllocatePoolWithTag(PagedPool, returnLength, REGISTRY_KEY_NAME_TAG));
+		pKeyNameInformation = RCAST<PKEY_NAME_INFORMATION>(ExAllocatePool2(POOL_FLAG_PAGED, returnLength, REGISTRY_KEY_NAME_TAG));
 		if (pKeyNameInformation == NULL)
 		{
 			DBGPRINT("RegistryBlockingFilter!BlockRegistryOperation: Failed to allocate memory for key name with size 0x%X.", returnLength);
@@ -175,7 +175,7 @@ RegistryBlockingFilter::BlockRegistryOperation (
 		// Allocate space for key name, a backslash, the value name, and the null-terminator.
 		//
 		fullKeyValueLength = pKeyNameInformation->NameLength + 2 + ValueName->Length + 1000;
-		fullKeyValueName = RCAST<PWCHAR>(ExAllocatePoolWithTag(NonPagedPoolNx, fullKeyValueLength, REGISTRY_KEY_NAME_TAG));
+		fullKeyValueName = RCAST<PWCHAR>(ExAllocatePool2(POOL_FLAG_NON_PAGED, fullKeyValueLength, REGISTRY_KEY_NAME_TAG));
 		if (fullKeyValueName == NULL)
 		{
 			DBGPRINT("RegistryBlockingFilter!BlockRegistryOperation: Failed to allocate memory for full key/value name with size 0x%X.", fullKeyValueLength);
