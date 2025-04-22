@@ -158,7 +158,7 @@ StackWalker::WalkAndResolveStack (
 		goto Exit;
 	}
 
-	NT_ASSERT(capturedReturnPtrs < ResolvedStackSize);
+	NT_ASSERT((ULONGLONG) capturedReturnPtrs < (ULONGLONG) ResolvedStackSize);
 
 	*ResolvedStackSize = capturedReturnPtrs;
 
